@@ -1,9 +1,8 @@
 from __future__ import print_function, division
 import pandas as pd
-from datetime import datetime
-import argparse
+from os.path import splitext
 
-COUNTER = 0
+
 
 
 def parseFile(doc):
@@ -29,19 +28,21 @@ def reverseComp(s):
 	Input:  string of DNA
 	Output: string of reverse complement DNA
 	"""
-	global COUNTER
-	COUNTER += 1
-	print(COUNTER)
-
 	s = s.upper()
 	comp = {'A':"T","T":"A","C":"G","G":"C"}
 	out = ''.join([comp[i] for i in s])
 	return out[::-1]
 
 def addAdapter(grna, backbone):
+	"""
+	Function to add flanks to gRNAs depending on the backbone.
+	Input: gRNA and backbone.
+	Output: Two lines of a dataframe coorisponding to the forward and 
+	reverse strand of the gRNA with flanks. 
+	"""
 	flanks = {
-		'f_137':('TTGG','GTTTAAGAGC'),
-		'r_137':('TTAGCTCTTAAAC','CCAACAAG'),
+		'f_137':('TTG','GTTTAAGAGC'),
+		'r_137':('TTAGCTCTTAAAC','CAACAAG'),
 		'f_330':('CACCG', ''),
 		'r_330':('AAAC','C')}
 
@@ -58,10 +59,18 @@ def addAdapter(grna, backbone):
 		 \n px330.')
 	return line1, line2
 
+def getFilename(file):
+	name = splitext(file)[0]
+	return name.split('/')[-1]
 
-def saveCSV(dat):
-	save = './' + str(datetime.now().date()) + '_output.csv'
-	dat.to_csv(save, index = False)
+
+def saveCSV(output, file):
+	"""
+	Saves the dataframe
+	"""
+
+	save = './' + getFilename(file) + '_oligo_output.csv'
+	output.to_csv(save, index = False)
 
 	return
 
@@ -88,5 +97,5 @@ if __name__ == "__main__":
 	dat = parseFile(sys.argv[1])
 	backbone = sys.argv[2]
 
-	saveCSV(generateOutput(dat, backbone))
+	saveCSV(generateOutput(dat, backbone), sys.argv[1])
 
