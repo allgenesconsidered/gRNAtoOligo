@@ -17,10 +17,8 @@ def parseFile(doc):
 
 	with open(doc, 'r') as f:
 		first_line = f.readline()
-
 	if not set(first_line.split(',')[1]) <= set('ATGCatgc'): # File has a header
 		return pd.read_csv(doc, header = 1)
-
 	return pd.read_csv(doc, header = None) # File has no header, starts with first gRNA
 
 def reverseComp(s):
