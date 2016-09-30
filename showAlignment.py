@@ -5,20 +5,28 @@ from os.path import splitext
 
 
 class oligoSequence:
+	"""
+	An oligo sequence. Contains methods to do the aligment and 
+	show the aligment graphically on the CLI. 
+
+	Note, the alignment algoithm assumes that the two sequences
+	align perfectly (ie without any sequence breaks or mismatches).
+	If you are looking for a different algorithm, don't use this one.
+	"""
 	def __init__(self,sequence):
-		self.sequence = sequence
+		self.sequence = sequence.upper()
 	def __str__(self):
 		return '<Oligo: %s >' %self.sequence
 
 	def alignment(self, seq1, seq2):
 		# Assumes perfect alignment.
 		both = [seq1, seq2]
-		both.sort(key = len)
-		smaller, larger = both[0], both[1]
+		both.sort(key = len) # Sort based on lenght, shortest first
+		smaller, larger = both[0], both[1] 
 
-		revSmall = grna.reverseComp(smaller)
-		for i in range(len(larger)):
-			if larger[i:i+len(revSmall)] == revSmall:
+		revSmall = grna.reverseComp(smaller) # take reverse comp of smaller oligo, for string matching
+		for i in range(len(larger)): # iterate over larger oligo
+			if larger[i:i+len(revSmall)] == revSmall: # 
 				return i, larger
 		return None, larger
 
@@ -74,4 +82,5 @@ if __name__ == "__main__":
 		seq1, seq2 = oligoSequence(grnas[0]), oligoSequence(grnas[1])
 	except IOError:
 		seq1, seq2 = oligoSequence(sys.argv[1]), oligoSequence(sys.argv[2])
+		
 	print(seq1.showAlignment(seq2))

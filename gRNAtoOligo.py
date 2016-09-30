@@ -3,11 +3,9 @@ import pandas as pd
 from os.path import splitext
 
 
-
-
 def parseFile(doc):
 	"""
-	Input:  Document of gRNAs
+	Input:  Document of gRNAs (for now, a .csv).
 	Output: panda df with gRNA and names
 	"""
 	if not '.csv' in doc:
@@ -28,8 +26,8 @@ def reverseComp(s):
 	"""
 	s = s.upper()
 	comp = {'A':"T","T":"A","C":"G","G":"C"}
-	out = ''.join([comp[i] for i in s])
-	return out[::-1]
+	out = ''.join([comp[i] for i in s]) # Generator function to replace all characters in s
+	return out[::-1] # Return inverse string
 
 def addAdapter(grna, backbone):
 	"""
@@ -39,10 +37,14 @@ def addAdapter(grna, backbone):
 	reverse strand of the gRNA with flanks. 
 	"""
 	flanks = {
-		'f_137':('TTG','GTTTAAGAGC'),
-		'r_137':('TTAGCTCTTAAAC','CAACAAG'),
+		'f_137':('TTGG','GTTTAAGAGC'),
+		'r_137':('TTAGCTCTTAAAC','CCAACAAG'),
 		'f_330':('CACCG', ''),
 		'r_330':('AAAC','C')}
+
+	grna.upper()
+	if grna[0] == 'G' and len(grna) == 20: #Too many G's
+		grna = grna[1:]
 
 	if backbone in ('p1371','p1372'):
 		line1 = flanks['f_137'][0] + grna + flanks['f_137'][1]
@@ -58,6 +60,9 @@ def addAdapter(grna, backbone):
 	return line1, line2
 
 def getFilename(file):
+	"""
+	Use os.path to grap the filename for use in generating the output csv
+	"""
 	name = splitext(file)[0]
 	return name.split('/')[-1]
 
@@ -66,7 +71,6 @@ def saveCSV(output, file):
 	"""
 	Saves the dataframe
 	"""
-
 	save = './' + getFilename(file) + '_oligo_output.csv'
 	output.to_csv(save, index = False)
 
