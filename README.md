@@ -35,14 +35,14 @@ For further validation, you can run showAlignment.py, which will show you alignm
 the first pair of oligos in the lost and show you the alignment pattern for quick visualization.
 
 ```bash
-$ python showAlignment.py test.csv
+$ python showAlignment.py test_oligo_output.csv
 Successful alignment:
-TTAGCTCTTAAACTTGTTGTCCTCCTGCTCGCCCAACAAG
+   TTGGGCGGCGGCGGTGGTTACTAGTTTAAGAGC
    |||||||||||||||||||||||||||||||||
-   CGAGAATTTGAACAACAGGAGGACGAGCGGGTT
+GAACAACCCGCCGCCGCCACCAATGATCAAATTCTCGATT
 ```
 
-### Downloading python and pandas
+### Downloading python
 
 You can download python here if you don't already have it.
 
