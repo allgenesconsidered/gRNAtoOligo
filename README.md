@@ -53,4 +53,8 @@ Make sure to get version 2.7.x
 You can verify python installed correctly by simply running python in terminal.
 ```bash
 $ python
+Python 2.7.12 (v2.7.12:d33e0cf91556, Jun 26 2016, 12:10:39)
+[GCC 4.2.1 (Apple Inc. build 5666) (dot 3)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>>
 ```
