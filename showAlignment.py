@@ -18,10 +18,10 @@ class oligoSequence:
 	def __str__(self):
 		return '<Oligo: %s >' %self.sequence
 
-	def alignment(self, seq1, seq2):
+	def alignment(self, seqSelf, seqComp):
 		# Assumes perfect alignment.
-		both = [seq1, seq2]
-		both.sort(key = len) # Sort based on lenght, shortest first
+		both = [seqSelf, seqComp]
+		both.sort(key = len) # Sort based on length, shortest first
 		smaller, larger = both[0], both[1] 
 
 		revSmall = grna.reverseComp(smaller) # take reverse comp of smaller oligo, for string matching
@@ -31,23 +31,33 @@ class oligoSequence:
 		return None, larger
 
 	def showAlignment(self,comp):
-		index, oligo1 = self.alignment(self.sequence, comp.sequence)
+
+		seqForward, seqReverse = self.sequence, comp.sequence
+
+		index, oligoLarger = self.alignment(seqForward, seqReverse)
+		size = 0
 
 		if index is None:
 			raise IOError(
 				"Alignment unsuccessful. Please check input.")
 
-		for seq in [self.sequence, comp.sequence]:
-			if seq is not oligo1:
-				oligo2 = seq
+		if seqForward is not oligoLarger:
+			size = len(seqForward)
+			seqForward = (' ' * index) + seqForward
+		else:
+			size = len(seqReverse)
+			seqReverse = (' ' * index) + seqReverse
+
 		output = "Successful alignment: \n" + \
-			oligo1 + '\n' + \
-			' ' * index + '|' * len(oligo2) + '\n' + \
-			' ' * index + oligo2[::-1] + '\n'
+			seqForward + '\n' + \
+			' ' * index + '|' * size + '\n' + \
+			seqReverse[::-1] + '\n'
 		return output
 
 
 def readCSV(file):
+	"""	Read in a csv and take the first 2 gRNA sequences.
+	"""
 	if not checkIfCSV(file):
 		raise IOError("Not a .csv")
 	with open(file) as f:
@@ -57,20 +67,23 @@ def readCSV(file):
 			test = row[1]
 			if checkIfDNA(test):
 				seqs.append(test)
-			if len(seqs) >= 2:
+			if len(seqs) == 2:
 				break
 		if len(seqs) == 0:
 			raise IOError('No valid DNA sequences in .csv')
 	return seqs
 
 def checkIfCSV(file):
+	"""  Check if the file is a valid csv file.
+	"""
 	return splitext(file)[1] == '.csv'
 
-def checkIfDNA(s):
-	if set(s) <= set('ATGCatgc'): 
+def checkIfDNA(string):
+	""" Returns true if the string contains elements 
+	"""
+	if set(string) <= set('ATGCatgc'): 
 		return True
 	return False
-
 
 
 		
