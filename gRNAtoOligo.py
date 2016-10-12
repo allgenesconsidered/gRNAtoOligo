@@ -1,6 +1,7 @@
 from __future__ import print_function, division
 import pandas as pd
 from os.path import splitext
+import sys, csv
 
 
 def parseFile(doc):
@@ -14,19 +15,22 @@ def parseFile(doc):
 		\n grna name | grna sequence ")
 
 	with open(doc, 'r') as f:
-		first_line = f.readline()
-	if not set(first_line.split(',')[1]) <= set('ATGCatgc'): # File has a header
-		return pd.read_csv(doc, header = 1)
-	return pd.read_csv(doc, header = None) # File has no header, starts with first gRNA
+		reader = csv.reader(f)
+		grnaList = [row for row in reader]
 
-def reverseComp(s):
+	if not set(grnaList[0][1]) <= set('ATGCatgc'): # File has a header
+		grnaList.remove(grnaList[0])
+	return grnaList # File has no header, starts with first gRNA
+
+def reverseComp(sequence):
 	"""
 	Input:  string of DNA
 	Output: string of reverse complement DNA
 	"""
-	s = s.upper()
+	sequence = sequence.upper()
 	comp = {'A':"T","T":"A","C":"G","G":"C"}
-	out = ''.join([comp[i] for i in s]) # Generator function to replace all characters in s
+	out = ''.join([comp[i] for i in sequence]) # Generator function to 
+											   # replace all characters in s.
 	return out[::-1] # Return inverse string
 
 def addAdapter(grna, backbone):
@@ -72,8 +76,11 @@ def saveCSV(output, file):
 	Saves the dataframe
 	"""
 	save = './' + getFilename(file) + '_oligo_output.csv'
-	output.to_csv(save, index = False)
 
+	with open(save, 'wb') as outfile:
+	    csv_writer = csv.writer(outfile)
+	    for row in output:
+	        csv_writer.writerow(row)
 	return
 
 def generateOutput(dat, backbone):
@@ -82,22 +89,25 @@ def generateOutput(dat, backbone):
 	Input: the file and the backbone argument
 	Output: A .csv file with adapters for each gRNa in the list.
 	"""
-	output_df = pd.DataFrame(columns=('Name','Sequence'))
-	for row in dat.iterrows():
-		oligos = addAdapter(row[1][1], backbone)
-		(row[1][0])
-		new_row = pd.DataFrame([
-			[row[1][0] + '_F', oligos[0]],
-			[row[1][0] + '_R', oligos[1]]],
-			columns=('Name','Sequence'))
-		output_df = output_df.append(new_row)
-	return output_df
+	output_csv = [['Name', 'Sequence']]
 
+	for row in dat:
+		oligos = addAdapter(row[1], backbone)
+		name = row[0]
+		output_csv.append([name + '_F', oligos[0]])
+		output_csv.append([name + '_R', oligos[1]])
 
-if __name__ == "__main__":
-	import sys
+	return output_csv
+
+def main():
+	
 	dat = parseFile(sys.argv[1])
 	backbone = sys.argv[2]
 
 	saveCSV(generateOutput(dat, backbone), sys.argv[1])
+
+
+if __name__ == "__main__":
+
+	main()
 
