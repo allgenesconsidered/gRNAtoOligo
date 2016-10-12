@@ -2,9 +2,8 @@
 
 ### Dependencies: 
 * python 2.7._
-* pandas (a python package)
 
-See the Appendix for installingt these dependencies.
+See the Appendix for installing python.
 
 ### Usage
 
@@ -36,14 +35,14 @@ For further validation, you can run showAlignment.py, which will show you alignm
 the first pair of oligos in the lost and show you the alignment pattern for quick visualization.
 
 ```bash
-$ python showAlignment.py test.csv
+$ python showAlignment.py test_oligo_output.csv
 Successful alignment:
-TTAGCTCTTAAACTTGTTGTCCTCCTGCTCGCCCAACAAG
+   TTGGGCGGCGGCGGTGGTTACTAGTTTAAGAGC
    |||||||||||||||||||||||||||||||||
-   CGAGAATTTGAACAACAGGAGGACGAGCGGGTT
+GAACAACCCGCCGCCGCCACCAATGATCAAATTCTCGATT
 ```
 
-### Downloading python and pandas
+### Downloading python
 
 You can download python here if you don't already have it.
 
@@ -54,9 +53,8 @@ Make sure to get version 2.7.x
 You can verify python installed correctly by simply running python in terminal.
 ```bash
 $ python
-```
-
-You can install pandas, a python package, using pip.
-```bash
-$ pip install pandas
+Python 2.7.12 (v2.7.12:d33e0cf91556, Jun 26 2016, 12:10:39)
+[GCC 4.2.1 (Apple Inc. build 5666) (dot 3)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>>
 ```
