@@ -2,9 +2,8 @@
 
 ### Dependencies: 
 * python 2.7._
-* pandas (a python package)
 
-See the Appendix for installingt these dependencies.
+See the Appendix for installing python.
 
 ### Usage
 
@@ -54,9 +53,4 @@ Make sure to get version 2.7.x
 You can verify python installed correctly by simply running python in terminal.
 ```bash
 $ python
-```
-
-You can install pandas, a python package, using pip.
-```bash
-$ pip install pandas
 ```
