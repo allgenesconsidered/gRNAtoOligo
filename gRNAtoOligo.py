@@ -1,6 +1,6 @@
 from __future__ import print_function, division
 import pandas as pd
-from os.path import splitext
+from os.path import dirname, basename
 import sys, csv
 
 
@@ -9,7 +9,7 @@ def parseFile(doc):
 	Input:  Document of gRNAs (for now, a .csv).
 	Output: panda df with gRNA and names
 	"""
-	if not '.csv' in doc:
+	if not '.csv' in basename(doc):
 		raise IOError(
 		"Please convert your output to a .csv with:\
 		\n grna name | grna sequence ")
@@ -65,17 +65,21 @@ def addAdapter(grna, backbone):
 
 def getFilename(file):
 	"""
-	Use os.path to grap the filename for use in generating the output csv
+	Use os.path to grab the filename for use in generating the output csv
 	"""
-	name = splitext(file)[0]
-	return name.split('/')[-1]
+	return dirname(file), basename(file).split('.')[0]
 
 
 def saveCSV(output, file):
 	"""
 	Saves the dataframe
 	"""
-	save = './' + getFilename(file) + '_oligo_output.csv'
+	path, filename = getFilename(file)
+
+	if path == '':
+		path = '.'
+
+	save = path + '/' + filename + '_oligo_output.csv'
 
 	with open(save, 'wb') as outfile:
 	    csv_writer = csv.writer(outfile)
