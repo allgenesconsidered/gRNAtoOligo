@@ -1,7 +1,7 @@
 from __future__ import print_function, division
 import pandas as pd
 from os.path import dirname, basename
-import sys, csv
+import sys, csv, re
 
 
 def parseFile(doc):
@@ -27,11 +27,16 @@ def reverseComp(sequence):
 	Input:  string of DNA
 	Output: string of reverse complement DNA
 	"""
-	sequence = sequence.upper()
 	comp = {'A':"T","T":"A","C":"G","G":"C"}
 	out = ''.join([comp[i] for i in sequence]) # Generator function to 
 											   # replace all characters in s.
 	return out[::-1] # Return inverse string
+
+def formatString(sequence):
+	"""
+	Format string to remove spaces and have all cases be upper.
+	"""
+	return re.sub(" ", "", sequence).upper()
 
 def addAdapter(grna, backbone):
 	"""
@@ -46,7 +51,6 @@ def addAdapter(grna, backbone):
 		'f_330':('CACCG', ''),
 		'r_330':('AAAC','C')}
 
-	grna.upper()
 	if grna[0] == 'G' and len(grna) == 20: #Too many G's
 		grna = grna[1:]
 
@@ -66,6 +70,7 @@ def addAdapter(grna, backbone):
 def getFilename(file):
 	"""
 	Use os.path to grab the filename for use in generating the output csv
+	Output: The path to the original file and the file name.
 	"""
 	return dirname(file), basename(file).split('.')[0]
 
@@ -96,7 +101,7 @@ def generateOutput(dat, backbone):
 	output_csv = [['Name', 'Sequence']]
 
 	for row in dat:
-		oligos = addAdapter(row[1], backbone)
+		oligos = addAdapter(formatString(row[1]), backbone)
 		name = row[0]
 		output_csv.append([name + '_F', oligos[0]])
 		output_csv.append([name + '_R', oligos[1]])
